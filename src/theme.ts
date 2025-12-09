@@ -4,34 +4,49 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#616161',
-      light: '#9e9e9e',
-      dark: '#424242',
+      main: '#1a237e',
+      light: '#534bae',
+      dark: '#000051',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#0d47a1',
+      light: '#5472d3',
+      dark: '#002171',
+      contrastText: '#ffffff',
     },
     background: {
       default: '#f5f5f5',
       paper: '#ffffff',
     },
     text: {
-      primary: '#212121',
-      secondary: '#757575',
+      primary: '#1a1a1a',
+      secondary: '#4a4a4a',
     },
     success: {
-      main: '#2e7d32',
+      main: '#1b5e20',
+      light: '#4c8c4a',
+      dark: '#003300',
     },
     warning: {
-      main: '#ed6c02',
+      main: '#e65100',
+      light: '#ff833a',
+      dark: '#ac1900',
     },
     error: {
-      main: '#d32f2f',
+      main: '#b71c1c',
+      light: '#f05545',
+      dark: '#7f0000',
     },
     info: {
-      main: '#0288d1',
+      main: '#01579b',
+      light: '#4f83cc',
+      dark: '#002f6c',
+    },
+    divider: 'rgba(0, 0, 0, 0.12)',
+    action: {
+      hover: 'rgba(0, 0, 0, 0.04)',
+      selected: 'rgba(0, 0, 0, 0.08)',
     },
   },
   typography: {
@@ -61,6 +76,7 @@ const theme = createTheme({
         root: {
           backgroundColor: '#ffffff',
           borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+          color: '#1a1a1a',
         },
       },
     },
