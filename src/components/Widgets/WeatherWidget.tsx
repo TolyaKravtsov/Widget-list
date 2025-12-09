@@ -4,7 +4,15 @@ import WidgetContainer from './WidgetContainer'
 import { useWeather } from '../../hooks/useWeather'
 
 function WeatherWidget() {
-  const { data, isLoading, error } = useWeather({ city: 'London' })
+  const { data, isLoading, error, geoError } = useWeather()
+
+  if (geoError) {
+    return (
+      <WidgetContainer title="Weather">
+        <Alert severity="error">{geoError}</Alert>
+      </WidgetContainer>
+    )
+  }
 
   if (isLoading) {
     return (

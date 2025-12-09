@@ -5,8 +5,7 @@ const API_BASE_URL = {
   crypto: 'https://api.coingecko.com/api/v3',
 }
 
-export const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || ''
-export const CRYPTO_API_KEY = import.meta.env.VITE_CRYPTO_API_KEY || ''
+export const WEATHER_API_KEY = 'd1d430c65f9f17ae4f018467ed9412bd'
 
 export const weatherApi = axios.create({
   baseURL: API_BASE_URL.weather,
@@ -19,9 +18,4 @@ export const weatherApi = axios.create({
 export const cryptoApi = axios.create({
   baseURL: API_BASE_URL.crypto,
 })
-
-export default {
-  weatherApi,
-  cryptoApi,
-}
 

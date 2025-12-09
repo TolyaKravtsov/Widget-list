@@ -4,7 +4,7 @@ import WidgetContainer from './WidgetContainer'
 import { useCrypto } from '../../hooks/useCrypto'
 
 function CryptoWidget() {
-  const { data, isLoading, error } = useCrypto({ coinId: 'bitcoin' })
+  const { data, isLoading, error } = useCrypto()
 
   if (isLoading) {
     return (

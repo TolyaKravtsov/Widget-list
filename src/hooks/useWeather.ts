@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import { weatherApi } from '../config/api'
 
 interface WeatherData {
@@ -18,31 +19,59 @@ interface WeatherData {
   }
 }
 
-interface UseWeatherOptions {
-  city?: string
-  lat?: number
-  lon?: number
+interface GeolocationPosition {
+  coords: {
+    latitude: number
+    longitude: number
+  }
 }
 
-export const useWeather = ({ city, lat, lon }: UseWeatherOptions = {}) => {
-  return useQuery<WeatherData>({
-    queryKey: ['weather', city, lat, lon],
-    queryFn: async () => {
-      const params: Record<string, string | number> = {}
-      if (city) {
-        params.q = city
-      } else if (lat !== undefined && lon !== undefined) {
-        params.lat = lat
-        params.lon = lon
-      } else {
-        params.q = 'London'
-      }
+export const useWeather = () => {
+  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null)
+  const [geoError, setGeoError] = useState<string | null>(null)
 
-      const response = await weatherApi.get('/weather', { params })
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGeoError('Geolocation is not supported by your browser')
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        })
+        setGeoError(null)
+      },
+      (error) => {
+        setGeoError('Unable to retrieve your location')
+        console.error('Geolocation error:', error)
+      }
+    )
+  }, [])
+
+  const query = useQuery<WeatherData>({
+    queryKey: ['weather', location?.lat, location?.lon],
+    queryFn: async () => {
+      if (!location) {
+        throw new Error('Location not available')
+      }
+      const response = await weatherApi.get('/weather', {
+        params: {
+          lat: location.lat,
+          lon: location.lon,
+        },
+      })
       return response.data
     },
-    enabled: !!city || (lat !== undefined && lon !== undefined),
+    enabled: !!location && !geoError,
     staleTime: 5 * 60 * 1000,
   })
+
+  return {
+    ...query,
+    geoError,
+  }
 }
 

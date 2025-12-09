@@ -11,16 +11,11 @@ interface CryptoData {
   image: string
 }
 
-interface UseCryptoOptions {
-  coinId?: string
-  vsCurrency?: string
-}
-
-export const useCrypto = ({ coinId = 'bitcoin', vsCurrency = 'usd' }: UseCryptoOptions = {}) => {
+export const useCrypto = () => {
   return useQuery<CryptoData>({
-    queryKey: ['crypto', coinId, vsCurrency],
+    queryKey: ['crypto'],
     queryFn: async () => {
-      const response = await cryptoApi.get(`/coins/${coinId}`, {
+      const response = await cryptoApi.get('/coins/bitcoin', {
         params: {
           localization: false,
           tickers: false,
@@ -33,9 +28,9 @@ export const useCrypto = ({ coinId = 'bitcoin', vsCurrency = 'usd' }: UseCryptoO
         id: response.data.id,
         symbol: response.data.symbol,
         name: response.data.name,
-        current_price: response.data.market_data.current_price[vsCurrency],
+        current_price: response.data.market_data.current_price.usd,
         price_change_percentage_24h: response.data.market_data.price_change_percentage_24h,
-        market_cap: response.data.market_data.market_cap[vsCurrency],
+        market_cap: response.data.market_data.market_cap.usd,
         image: response.data.image.small,
       }
     },
