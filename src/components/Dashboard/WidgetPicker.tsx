@@ -9,7 +9,6 @@ import {
   ListItemButton,
   ListItemText,
   Typography,
-  Box,
 } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { WIDGET_REGISTRY } from '../../config/widgetRegistry'
@@ -36,11 +35,9 @@ function WidgetPicker({ open, onClose }: WidgetPickerProps) {
       <DialogTitle>Add Widget</DialogTitle>
       <DialogContent>
         {availableWidgets.length === 0 ? (
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography variant="body1" color="text.secondary">
-              All available widgets have been added to your dashboard.
-            </Typography>
-          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+            All widgets added
+          </Typography>
         ) : (
           <List>
             {availableWidgets.map((widget) => (

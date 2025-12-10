@@ -9,23 +9,8 @@ interface AuthState {
   isAuthenticated: boolean
   user: User | null
   token: string | null
-  login: (username: string, password: string) => Promise<boolean>
+  login: (username: string, password: string) => boolean
   logout: () => void
-  checkAuth: () => void
-}
-
-// Mock authentication - accepts any credentials
-const mockLogin = async (username: string, _password: string): Promise<{ token: string; user: User }> => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 500))
-  
-  // Mock token generation
-  const token = `mock-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-  
-  return {
-    token,
-    user: { username },
-  }
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -34,25 +19,20 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       user: null,
       token: null,
-      login: async (username: string, password: string) => {
-        try {
-          if (!username.trim() || !password.trim()) {
-            return false
-          }
-          
-          const { token, user } = await mockLogin(username, password)
-          
-          set({
-            isAuthenticated: true,
-            user,
-            token,
-          })
-          
-          return true
-        } catch (error) {
-          console.error('Login error:', error)
+      login: (username: string, password: string) => {
+        if (!username.trim() || !password.trim()) {
           return false
         }
+        
+        const token = `mock-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        
+        set({
+          isAuthenticated: true,
+          user: { username },
+          token,
+        })
+        
+        return true
       },
       logout: () => {
         set({
@@ -60,10 +40,6 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           token: null,
         })
-      },
-      checkAuth: () => {
-        const state = useAuthStore.getState()
-        set({ isAuthenticated: !!(state.token && state.user) })
       },
     }),
     {

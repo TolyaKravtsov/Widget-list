@@ -1,29 +1,20 @@
-import { Suspense, lazy } from 'react'
-import { Box, Grid, Typography, CircularProgress } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import DraggableWidget from '../Widgets/DraggableWidget'
+import WeatherWidget from '../Widgets/WeatherWidget'
+import CryptoWidget from '../Widgets/CryptoWidget'
+import TaskListWidget from '../Widgets/TaskListWidget'
 import { useWidgetStore } from '../../store/widgetStore'
-
-// Lazy load widgets
-const WeatherWidget = lazy(() => import('../Widgets/WeatherWidget'))
-const CryptoWidget = lazy(() => import('../Widgets/CryptoWidget'))
-const TaskListWidget = lazy(() => import('../Widgets/TaskListWidget'))
 
 const widgetComponents: Record<string, React.ComponentType> = {
   weather: WeatherWidget,
   crypto: CryptoWidget,
   tasks: TaskListWidget,
 }
-
-const LoadingFallback = () => (
-  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
-    <CircularProgress />
-  </Box>
-)
 
 function Dashboard() {
   const widgetOrder = useWidgetStore((state) => state.widgetOrder)
@@ -66,18 +57,13 @@ function Dashboard() {
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 minHeight: '50vh',
-                gap: 2,
               }}
             >
               <Typography variant="h6" color="text.secondary">
                 No widgets added yet
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Click "Add Widget" in the navbar to get started
               </Typography>
             </Box>
           ) : (
@@ -90,9 +76,7 @@ function Dashboard() {
                       <Grid item xs={12} md={6} lg={4} key={widgetId}>
                         <DraggableWidget id={widgetId} onRemove={removeWidget}>
                           {WidgetComponent ? (
-                            <Suspense fallback={<LoadingFallback />}>
-                              <WidgetComponent />
-                            </Suspense>
+                            <WidgetComponent />
                           ) : (
                             <Box sx={{ p: 2 }}>
                               <Typography color="error">Widget not found: {widgetId}</Typography>

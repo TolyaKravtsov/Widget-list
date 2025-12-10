@@ -8,7 +8,6 @@ import {
   Button,
   Typography,
   Alert,
-  CircularProgress,
 } from '@mui/material'
 import { Login as LoginIcon } from '@mui/icons-material'
 import { useAuthStore } from '../../store/authStore'
@@ -17,26 +16,18 @@ function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const login = useAuthStore((state) => state.login)
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setIsLoading(true)
 
-    try {
-      const success = await login(username, password)
-      if (success) {
-        navigate('/')
-      } else {
-        setError('Invalid credentials. Please try again.')
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.')
-    } finally {
-      setIsLoading(false)
+    const success = login(username, password)
+    if (success) {
+      navigate('/')
+    } else {
+      setError('Invalid credentials. Please try again.')
     }
   }
 
@@ -82,7 +73,6 @@ function Login() {
               fullWidth
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              disabled={isLoading}
               required
               autoFocus
             />
@@ -93,7 +83,6 @@ function Login() {
               fullWidth
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
               required
             />
             <Button
@@ -101,11 +90,11 @@ function Login() {
               variant="contained"
               fullWidth
               size="large"
-              startIcon={isLoading ? <CircularProgress size={20} /> : <LoginIcon />}
-              disabled={isLoading || !username.trim() || !password.trim()}
+              startIcon={<LoginIcon />}
+              disabled={!username.trim() || !password.trim()}
               sx={{ mt: 2 }}
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              Sign In
             </Button>
           </Box>
 

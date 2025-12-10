@@ -18,7 +18,3 @@ export const WIDGET_REGISTRY: WidgetConfig[] = [
     name: 'Task List',
   },
 ]
-
-export const getWidgetConfig = (id: string): WidgetConfig | undefined => {
-  return WIDGET_REGISTRY.find((widget) => widget.id === id)
-}
