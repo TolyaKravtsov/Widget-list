@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
 import { weatherApi } from '../config/api'
 
 interface WeatherData {
@@ -19,59 +18,20 @@ interface WeatherData {
   }
 }
 
-interface GeolocationPosition {
-  coords: {
-    latitude: number
-    longitude: number
-  }
-}
-
-export const useWeather = () => {
-  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null)
-  const [geoError, setGeoError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setGeoError('Geolocation is not supported by your browser')
-      return
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position: GeolocationPosition) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        })
-        setGeoError(null)
-      },
-      (error) => {
-        setGeoError('Unable to retrieve your location')
-        console.error('Geolocation error:', error)
-      }
-    )
-  }, [])
-
+export const useWeather = (city: string = 'London,uk') => {
   const query = useQuery<WeatherData>({
-    queryKey: ['weather', location?.lat, location?.lon],
+    queryKey: ['weather', city],
     queryFn: async () => {
-      if (!location) {
-        throw new Error('Location not available')
-      }
       const response = await weatherApi.get('/weather', {
         params: {
-          lat: location.lat,
-          lon: location.lon,
+          q: city,
         },
       })
       return response.data
     },
-    enabled: !!location && !geoError,
     staleTime: 5 * 60 * 1000,
   })
 
-  return {
-    ...query,
-    geoError,
-  }
+  return query
 }
 
